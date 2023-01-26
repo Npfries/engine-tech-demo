@@ -1,5 +1,5 @@
-import type { Sprite } from "pixi.js";
-import { Component } from "../../ecs/Component/AbstractComponent";
+import type { Sprite } from 'pixi.js';
+import { Component } from '../../ecs/Component/AbstractComponent';
 
 export class RenderableComponent extends Component {
     public height: number;

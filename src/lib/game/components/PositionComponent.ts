@@ -1,4 +1,4 @@
-import { Component } from "../../ecs/Component/AbstractComponent";
+import { Component } from '../../ecs/Component/AbstractComponent';
 
 export class PositionComponent extends Component {
     public x: number;

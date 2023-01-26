@@ -1,81 +1,52 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { App } from './ecs/App/App';
-  import { InputComponent } from './game/components/InputComponent';
-  import { PositionComponent } from './game/components/PositionComponent';
-  import { PlayerEntity } from './game/entities/PlayerEntity';
-  import { MovementSystem } from './game/systems/RenderSystem/MovementSystem';
-  import { RenderSystem } from './game/systems/RenderSystem/RenderSystem';
-  import { GameLoop } from './utils/GameLoop';
-  
-  let framerate: number;
+    import { onMount } from 'svelte';
+    import { App } from './ecs/App/App';
+    import { AudioComponent } from './game/components/AudioComponent';
+    import { InputComponent } from './game/components/InputComponent';
+    import { PositionComponent } from './game/components/PositionComponent';
+    import { MusicBox } from './game/entities/MusicBox';
+    import { PlayerEntity } from './game/entities/PlayerEntity';
+    import { MovementSystem } from './game/systems/MovementSystem/MovementSystem';
+    import { RenderSystem } from './game/systems/RenderSystem/RenderSystem';
+    import { MusicSystem } from './game/systems/AudioSystems/MusicSystem';
+    import { GameLoop } from './utils/GameLoop/GameLoop';
+    import { KeyboardMouseInput } from './utils/Input/KeyboardMouseInput';
+    import music from '../assets/sounds/music/notification.wav';
 
-  onMount(() => {
-    const GameApp = new App([RenderSystem, MovementSystem]);
-    const player = new PlayerEntity()
-    const position = player.getComponent<PositionComponent>(PositionComponent)
-    position.x = 10
-    position.y = 10
-    const input = player.getComponent<InputComponent>(InputComponent)
-    
-    window.addEventListener("keydown", onKeyDown, false);
-window.addEventListener("keyup", onKeyUp, false);
+    let framerate: number;
 
-function onKeyDown(event) {
-  var keyCode = event.keyCode;
-  switch (keyCode) {
-    case 68: //d
-      input.moveRight = true;
-      break;
-    case 83: //s
-      input.moveDown = true;
-      break;
-    case 65: //a
-      input.moveLeft = true;
-      break;
-    case 87: //w
-      input.moveUp = true;
-      break;
-  }
-}
+    onMount(() => {
+        const GameApp = new App([RenderSystem, MovementSystem, MusicSystem]);
 
-function onKeyUp(event) {
-  var keyCode = event.keyCode;
+        const player = new PlayerEntity();
+        const position = player.getComponent<PositionComponent>(PositionComponent);
+        position.x = 10;
+        position.y = 10;
 
-  switch (keyCode) {
-    case 68: //d
-      input.moveRight = false;
-      break;
-    case 83: //s
-      input.moveDown = false;
-      break;
-    case 65: //a
-      input.moveLeft = false;
-      break;
-    case 87: //w
-      input.moveUp = false;
-      break;
-  }
-}
+        const input = player.getComponent<InputComponent>(InputComponent);
+        const kbMouseInput = new KeyboardMouseInput(input);
 
-    GameApp.addEntity(player)
+        GameApp.addEntity(player);
 
-    const Loop = new GameLoop(2);
+        const musicBox = new MusicBox();
 
-    Loop.onTick((deltaTime) => {
-      framerate = Math.ceil(((1000 / deltaTime) + framerate) / 2) || 0
-      GameApp.update(deltaTime)
-    })
+        musicBox.getComponent<AudioComponent>(AudioComponent).src = music;
 
-    Loop.start()
-  })
+        GameApp.addEntity(musicBox);
+
+        const Loop = new GameLoop(2);
+
+        Loop.onTick((deltaTime) => {
+            framerate = Math.ceil((1000 / deltaTime + framerate) / 2) || 0;
+            GameApp.update(deltaTime);
+        });
+
+        Loop.start();
+    });
 </script>
 
 <div>
-  Framerate: {framerate}
-  <div id='GameCanvas'>
-
-  </div>
-  W A S D
+    Framerate: {framerate}
+    <div id="GameCanvas" />
+    W A S D
 </div>
-
