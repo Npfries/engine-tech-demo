@@ -12,11 +12,13 @@
     import { GameLoop } from './utils/GameLoop/GameLoop';
     import { KeyboardMouseInput } from './utils/Input/KeyboardMouseInput';
     import music from '../assets/sounds/music/notification.wav';
+    import { RenderableComponent } from './game/components/RenderableComponent';
+    import { AnimationSystem } from './game/systems/AnimationSystem/AnimationSystem';
 
     let framerate: number;
 
     onMount(() => {
-        const GameApp = new App([MovementSystem, MusicSystem, RenderSystem]);
+        const GameApp = new App([MovementSystem, MusicSystem, RenderSystem, AnimationSystem]);
         GameApp.afterUpdate(() => {
             framerate = Math.round(GameApp.globals.FPS);
         });
@@ -28,6 +30,9 @@
         position.x = 10;
         position.y = 10;
         const input = player.getComponent<InputComponent>(InputComponent);
+        const renderableComponent = player.getComponent<RenderableComponent>(RenderableComponent);
+        renderableComponent.data = 'human.json';
+        renderableComponent.idleAnimation = 'idle';
         const kbMouseInput = new KeyboardMouseInput(input);
         GameApp.addEntity(player);
 
