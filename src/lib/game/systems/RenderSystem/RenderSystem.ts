@@ -2,7 +2,6 @@ import { Application, Sprite, Texture } from 'pixi.js';
 import { System } from '../../../ecs/System/AbstractSystem';
 import { PositionComponent } from '../../components/PositionComponent';
 import { RenderableComponent } from '../../components/RenderableComponent';
-import { PlayerEntity } from '../../entities/PlayerEntity';
 
 export class RenderSystem extends System {
     private _stage: Application['stage'];
@@ -16,6 +15,10 @@ export class RenderSystem extends System {
         this._stage = PixiApp.stage;
         // @ts-ignore
         document.getElementById('GameCanvas').appendChild(PixiApp.view);
+        PixiApp.ticker.add((dt) => {
+            this.ecs.globals.FPS = PixiApp.ticker.FPS;
+            this.ecs.update(dt);
+        });
     }
 
     update() {

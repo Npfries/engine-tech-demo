@@ -16,32 +16,33 @@
     let framerate: number;
 
     onMount(() => {
-        const GameApp = new App([RenderSystem, MovementSystem, MusicSystem]);
+        const GameApp = new App([MovementSystem, MusicSystem, RenderSystem]);
+        GameApp.afterUpdate(() => {
+            framerate = Math.round(GameApp.globals.FPS);
+        });
+
+        // begin game state setup
 
         const player = new PlayerEntity();
         const position = player.getComponent<PositionComponent>(PositionComponent);
         position.x = 10;
         position.y = 10;
-
         const input = player.getComponent<InputComponent>(InputComponent);
         const kbMouseInput = new KeyboardMouseInput(input);
-
         GameApp.addEntity(player);
 
         const musicBox = new MusicBox();
-
         musicBox.getComponent<AudioComponent>(AudioComponent).src = music;
-
         GameApp.addEntity(musicBox);
 
-        const Loop = new GameLoop(2);
+        // end game state setup
 
-        Loop.onTick((deltaTime) => {
-            framerate = Math.ceil((1000 / deltaTime + framerate) / 2) || 0;
-            GameApp.update(deltaTime);
-        });
-
-        Loop.start();
+        // const Loop = new GameLoop(16); not in use, switch to internalrenderer lib .ticker
+        // Loop.onTick((deltaTime) => {
+        //     framerate = Math.ceil((1000 / deltaTime + framerate) / 2) || 0;
+        //     GameApp.update(deltaTime);
+        // });
+        // Loop.start();
     });
 </script>
 
