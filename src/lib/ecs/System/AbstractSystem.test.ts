@@ -25,10 +25,10 @@ it('should index an entity when no query is provided', () => {
 	class TestSystem extends System {
 		constructor() {
 			super();
-			this.query.set('entities', []);
+			this.entityQuery.set('entities', []);
 		}
 		update() {
-			indexedEntity = this.collection.entities.get('664fb-df42-4111-fsd2-sdfw34221');
+			indexedEntity = this.entities.entities.get('664fb-df42-4111-fsd2-sdfw34221');
 		}
 	}
 
@@ -47,10 +47,10 @@ it('should index an entity when it contains the queried component', () => {
 	class TestSystem extends System {
 		constructor() {
 			super();
-			this.query.set('entities', [TestComponent]);
+			this.entityQuery.set('entities', [TestComponent]);
 		}
 		update() {
-			indexedEntity = this.collection.entities.get('asd24-df42-4111-fdd5-lkn2334s');
+			indexedEntity = this.entities.entities.get('asd24-df42-4111-fdd5-lkn2334s');
 		}
 	}
 
@@ -69,10 +69,10 @@ it('should not index an entity when it does not contain the queried component', 
 	class TestSystem extends System {
 		constructor() {
 			super();
-			this.query.set('entities', [UnusedComponent]);
+			this.entityQuery.set('entities', [UnusedComponent]);
 		}
 		update() {
-			indexedEntity = this.collection.entities.get('asd24-df42-4111-fdd5-lkn2334s');
+			indexedEntity = this.entities.entities.get('asd24-df42-4111-fdd5-lkn2334s');
 		}
 	}
 

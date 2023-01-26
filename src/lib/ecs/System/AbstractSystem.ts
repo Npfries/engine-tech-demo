@@ -10,31 +10,31 @@ abstract class System {
 	protected ecs: App;
 
 	//old
-	protected query = new Map<string, typeof Component[]>();
-	protected collection: { [key: string]: Map<uid, Entity> } = {};
+	protected entityQuery = new Map<string, typeof Component[]>();
+	protected entities: { [key: string]: Map<uid, Entity> } = {};
 
 	//new
-	protected queryList: typeof Component[] = [];
-	protected componentCollection = new Map<typeof Component, Map<uid, Component>>();
+	protected componentQuery: typeof Component[] = [];
+	protected components = new Map<typeof Component, Map<uid, Component>>();
 
 	public prepare(ecs: App) {
 		this.ecs = ecs;
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 		//old
-		this.query.forEach((_, key) => {
-			this.collection[key] = new Map();
+		this.entityQuery.forEach((_, key) => {
+			this.entities[key] = new Map();
 		});
 
 		//new
-		this.queryList.forEach((component) => {
-			this.componentCollection.set(component, new Map());
+		this.componentQuery.forEach((component) => {
+			this.components.set(component, new Map());
 		});
 	}
 
 	public indexEntity(entity: Entity) {
 		//old
-		this.query.forEach((components, key) => {
+		this.entityQuery.forEach((components, key) => {
 			let entityHasRequiredComponents = true;
 			components.forEach((requiredComponent) => {
 				if (!entity.getComponent(requiredComponent)) {
@@ -43,27 +43,27 @@ abstract class System {
 			});
 			if (entityHasRequiredComponents) {
 				// if (!this.collection[key]) this.collection[key] = new Map();
-				this.collection[key].set(entity.id, entity);
+				this.entities[key].set(entity.id, entity);
 			}
 		});
 
 		//new
-		this.queryList.forEach((component) => {
+		this.componentQuery.forEach((component) => {
 			const entityComponent = entity.getComponent(component);
 			if (entityComponent) {
-				this.componentCollection.get(component).set(entity.id, entityComponent);
+				this.components.get(component).set(entity.id, entityComponent);
 			}
 		});
 	}
 
 	public unindexEntity(entity: Entity) {
-		Object.keys(this.collection).forEach((key) => {
-			this.collection[key].delete(entity.id);
+		Object.keys(this.entities).forEach((key) => {
+			this.entities[key].delete(entity.id);
 		});
 	}
 
 	public get<T extends Component>(component: typeof Component) {
-		return this.componentCollection.get(component) as Map<uid, T>;
+		return this.components.get(component) as Map<uid, T>;
 	}
 
 	abstract update(delta: number);

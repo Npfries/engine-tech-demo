@@ -10,14 +10,11 @@ export class GameLoop {
     private tick(lastTime: number) {
         const currentTime = Date.now()
         const deltaTime = currentTime - lastTime
-        if (!this._paused) this._onTickCallback(deltaTime)
+        if (!this._paused && deltaTime) this._onTickCallback(deltaTime)
         const callbackDuration = Date.now()
-        console.log('GL:LT ', lastTime)
-        console.log('GL:CT ', currentTime)
-        console.log('GL:DT ', deltaTime)
         setTimeout(() => {
             this.tick(currentTime)
-        }, lastTime + this._tickRate - callbackDuration)
+        }, currentTime + this._tickRate - callbackDuration)
     }
 
     public start() {
