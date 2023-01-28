@@ -19,6 +19,7 @@
 
     let framerate: number;
     let keyDownKey: number;
+    let gamepadId: string;
 
     onMount(() => {
         // debug
@@ -30,6 +31,17 @@
             },
             false
         );
+
+        window.addEventListener('gamepadconnected', (e) => {
+            gamepadId = e.gamepad.id;
+            console.log(
+                'Gamepad connected at index %d: %s. %d buttons, %d axes.',
+                e.gamepad.index,
+                e.gamepad.id,
+                e.gamepad.buttons.length,
+                e.gamepad.axes.length
+            );
+        });
 
         // set up game
 
@@ -72,7 +84,7 @@
 </script>
 
 <div>
-    Framerate: {framerate} Input: {keyDownKey}
+    Framerate: {framerate} Input: {keyDownKey} Gamepad: {gamepadId}
     <div id="GameCanvas" />
     W A S D
 </div>

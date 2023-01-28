@@ -10,16 +10,6 @@ export class KeyboardMouseInput {
         window.addEventListener('keydown', _onKeyDown, false);
         window.addEventListener('keyup', _onKeyUp, false);
 
-        window.addEventListener('gamepadconnected', (e) => {
-            console.log(
-                'Gamepad connected at index %d: %s. %d buttons, %d axes.',
-                e.gamepad.index,
-                e.gamepad.id,
-                e.gamepad.buttons.length,
-                e.gamepad.axes.length
-            );
-        });
-
         function _onKeyDown(event) {
             var keyCode = event.keyCode;
             switch (keyCode) {
