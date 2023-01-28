@@ -30,6 +30,7 @@ export class RenderSystem extends System {
 
             // if sprite does not exist, add it to the stage
             if (!renderableComponent.visible) {
+                renderableComponent.visible = true;
                 // renderableComponent.sprite = new Sprite(Texture.WHITE); // replace with real texture
                 Assets.load(renderableComponent.data).then((sheet) => {
                     renderableComponent._sheet = sheet;
@@ -43,8 +44,6 @@ export class RenderSystem extends System {
 
                     this._stage.addChild(renderableComponent.sprite);
                 });
-
-                renderableComponent.visible = true;
             }
 
             if (renderableComponent.sprite) {

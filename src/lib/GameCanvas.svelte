@@ -14,11 +14,26 @@
     import music from '../assets/sounds/music/notification.wav';
     import { RenderableComponent } from './game/components/RenderableComponent';
     import { AnimationSystem } from './game/systems/AnimationSystem/AnimationSystem';
+    import { DevToolsComponent } from './game/components/DevToolsComponent';
+    import { DevToolsSystem } from './game/systems/DevToolsSystem/DevToolsSystem';
 
     let framerate: number;
+    let keyDownKey: number;
 
     onMount(() => {
-        const GameApp = new App([MovementSystem, MusicSystem, RenderSystem, AnimationSystem]);
+        // debug
+
+        window.addEventListener(
+            'keydown',
+            (event) => {
+                keyDownKey = event.keyCode;
+            },
+            false
+        );
+
+        // set up game
+
+        const GameApp = new App([DevToolsSystem, MovementSystem, MusicSystem, RenderSystem, AnimationSystem]);
         GameApp.afterUpdate(() => {
             framerate = Math.round(GameApp.globals.FPS);
         });
@@ -33,7 +48,12 @@
         const renderableComponent = player.getComponent<RenderableComponent>(RenderableComponent);
         renderableComponent.data = 'human.json';
         renderableComponent.idleAnimation = 'idle';
-        const kbMouseInput = new KeyboardMouseInput(input);
+
+        player.addComponent(DevToolsComponent, player);
+
+        const devToolsComponent = player.getComponent<DevToolsComponent>(DevToolsComponent);
+        const kbMouseInput = new KeyboardMouseInput(input, devToolsComponent);
+
         GameApp.addEntity(player);
 
         const musicBox = new MusicBox();
@@ -52,7 +72,7 @@
 </script>
 
 <div>
-    Framerate: {framerate}
+    Framerate: {framerate} Input: {keyDownKey}
     <div id="GameCanvas" />
     W A S D
 </div>
